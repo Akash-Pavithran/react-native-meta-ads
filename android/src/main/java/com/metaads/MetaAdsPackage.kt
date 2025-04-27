@@ -12,6 +12,7 @@ class MetaAdsPackage : BaseReactPackage() {
     return when (name) {
       AdSettings.NAME -> AdSettings(reactContext)
       InterstitialAdManager.NAME -> InterstitialAdManager(reactContext)
+      RewardedAdManager.NAME -> RewardedAdManager(reactContext)
       else -> null
     }
   }
@@ -30,6 +31,14 @@ class MetaAdsPackage : BaseReactPackage() {
       moduleInfos[InterstitialAdManager.NAME] = ReactModuleInfo(
         InterstitialAdManager.NAME,
         InterstitialAdManager.NAME,
+        false,  // canOverrideExistingModule
+        false,  // needsEagerInit
+        false,  // isCxxModule
+        true // isTurboModule
+      )
+      moduleInfos[RewardedAdManager.NAME] = ReactModuleInfo(
+        RewardedAdManager.NAME,
+        RewardedAdManager.NAME,
         false,  // canOverrideExistingModule
         false,  // needsEagerInit
         false,  // isCxxModule
