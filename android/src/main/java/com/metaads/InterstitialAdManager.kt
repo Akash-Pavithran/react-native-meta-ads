@@ -11,7 +11,7 @@ import android.util.Log
 
 class InterstitialAdManager(reactContext: ReactApplicationContext) : NativeInterstitialAdManagerSpec(reactContext) {
     private var interstitialAd: InterstitialAd? = null
-    private var preloadedAd: InterstitialAd? = null
+    private var isAdLoading = false
     private val TAG = "InterstitialAdManager"
 
     companion object {
@@ -22,6 +22,17 @@ class InterstitialAdManager(reactContext: ReactApplicationContext) : NativeInter
 
     override fun loadAd(placementId: String, promise: Promise) {
         try {
+            if (isAdLoading) {
+                promise.reject("AD_LOADING", "Ad is already loading")
+                return
+            }
+
+            if (interstitialAd?.isAdLoaded == true) {
+                promise.reject("AD_LOADED", "Ad is already loaded")
+                return
+            }
+
+            isAdLoading = true
             // Create the interstitial ad
             interstitialAd = InterstitialAd(reactApplicationContext, placementId)
 
@@ -36,11 +47,13 @@ class InterstitialAdManager(reactContext: ReactApplicationContext) : NativeInter
                 }
 
                 override fun onError(ad: com.facebook.ads.Ad, adError: AdError) {
+                    isAdLoading = false
                     Log.e(TAG, "Interstitial ad failed to load: ${adError.errorMessage}")
                     promise.reject("AD_LOAD_ERROR", adError.errorMessage)
                 }
 
                 override fun onAdLoaded(ad: com.facebook.ads.Ad) {
+                    isAdLoading = false
                     Log.d(TAG, "Interstitial ad is loaded and ready to be displayed")
                     promise.resolve(null)
                 }
@@ -60,6 +73,7 @@ class InterstitialAdManager(reactContext: ReactApplicationContext) : NativeInter
                 ?.build()
             interstitialAd?.loadAd(loadConfig!!)
         } catch (e: Exception) {
+            isAdLoading = false
             Log.e(TAG, "Error loading ad: ${e.message}")
             promise.reject("AD_LOAD_ERROR", e.message ?: "Unknown error loading ad")
         }
@@ -84,73 +98,6 @@ class InterstitialAdManager(reactContext: ReactApplicationContext) : NativeInter
         } catch (e: Exception) {
             Log.e(TAG, "Error showing ad: ${e.message}")
             promise.reject("AD_SHOW_ERROR", e.message ?: "Unknown error showing ad")
-        }
-    }
-
-    override fun preloadAd(placementId: String, promise: Promise) {
-        try {
-            // Create the preloaded interstitial ad
-            preloadedAd = InterstitialAd(reactApplicationContext, placementId)
-
-            // Create listeners for the Preloaded Interstitial Ad
-            val preloadedAdListener = object : InterstitialAdListener {
-                override fun onInterstitialDisplayed(ad: com.facebook.ads.Ad) {
-                    Log.d(TAG, "Preloaded interstitial ad displayed")
-                }
-
-                override fun onInterstitialDismissed(ad: com.facebook.ads.Ad) {
-                    Log.d(TAG, "Preloaded interstitial ad dismissed")
-                }
-
-                override fun onError(ad: com.facebook.ads.Ad, adError: AdError) {
-                    Log.e(TAG, "Preloaded interstitial ad failed to load: ${adError.errorMessage}")
-                    promise.reject("AD_LOAD_ERROR", adError.errorMessage)
-                }
-
-                override fun onAdLoaded(ad: com.facebook.ads.Ad) {
-                    Log.d(TAG, "Preloaded interstitial ad is loaded and ready to be displayed")
-                    promise.resolve(null)
-                }
-
-                override fun onAdClicked(ad: com.facebook.ads.Ad) {
-                    Log.d(TAG, "Preloaded interstitial ad clicked")
-                }
-
-                override fun onLoggingImpression(ad: com.facebook.ads.Ad) {
-                    Log.d(TAG, "Preloaded interstitial ad impression logged")
-                }
-            }
-
-            // Load the preloaded ad
-            val loadConfig = preloadedAd?.buildLoadAdConfig()
-                ?.withAdListener(preloadedAdListener)
-                ?.build()
-            preloadedAd?.loadAd(loadConfig!!)
-        } catch (e: Exception) {
-            Log.e(TAG, "Error preloading ad: ${e.message}")
-            promise.reject("AD_PRELOAD_ERROR", e.message ?: "Unknown error preloading ad")
-        }
-    }
-
-    override fun showPreloadedAd(placementId: String, promise: Promise) {
-        try {
-            if (preloadedAd == null || !preloadedAd!!.isAdLoaded) {
-                Log.e(TAG, "Preloaded ad not loaded")
-                promise.reject("AD_NOT_LOADED", "Preloaded ad is not loaded")
-                return
-            }
-
-            if (preloadedAd!!.isAdInvalidated) {
-                Log.e(TAG, "Preloaded ad is invalidated")
-                promise.reject("AD_INVALIDATED", "Preloaded ad is invalidated")
-                return
-            }
-
-            preloadedAd!!.show()
-            promise.resolve(null)
-        } catch (e: Exception) {
-            Log.e(TAG, "Error showing preloaded ad: ${e.message}")
-            promise.reject("AD_SHOW_ERROR", e.message ?: "Unknown error showing preloaded ad")
         }
     }
 }
