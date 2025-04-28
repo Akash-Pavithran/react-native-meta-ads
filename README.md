@@ -1,6 +1,18 @@
 # React Native Meta Ads
 
-A React Native module for Meta Audience Network ads.
+A React Native package for Meta Audience Network integration. 
+Supports:
+- Interstitial ads
+- Rewarded ads
+
+## Development Status
+
+⚠️ **Note**: This package is currently in development. Only Android implementation is available at the moment. iOS support is planned but not yet implemented. Contributors are welcome to help implement the iOS side.
+
+## Platform Support
+
+- ✅ Android
+- ❌ iOS (Coming soon)
 
 ## Installation
 
@@ -65,16 +77,10 @@ function YourComponent() {
 
 ### Android
 
-For video ads (including rewarded ads), you need to enable hardware acceleration in your app's `AndroidManifest.xml`:
+For optimal performance of video ads (including rewarded ads), it's recommended to enable hardware acceleration in your app's `AndroidManifest.xml`. While hardware acceleration is enabled by default for API level >= 14, explicitly enabling it ensures the best experience:
 
 ```xml
 <application android:hardwareAccelerated="true" ...>
-```
-
-Or for specific activities:
-
-```xml
-<activity android:name="com.facebook.ads.AudienceNetworkActivity" android:hardwareAccelerated="true" .../>
 ```
 
 ## API
