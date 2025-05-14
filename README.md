@@ -7,7 +7,7 @@ Supports:
 
 ## Development Status
 
-⚠️ **Note**: This package is currently in development. Only Android implementation is available at the moment. iOS support is planned but not yet implemented. Contributors are welcome to help implement the iOS side.
+⚠️ **Note**: This open-source package currently supports Android and meets my personal requirements. iOS support is planned for the future, but I don't have a timeline for it. I'm sharing it as a package so others can either build upon it or contribute to its development. If this package has significantly saved your time or helped your project or led to successful monetization, and you insist on showing appreciation, donations via [PayPal](paypal.me/akashp96) are welcome.
 
 ## Platform Support
 
