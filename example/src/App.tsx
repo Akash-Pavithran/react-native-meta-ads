@@ -9,7 +9,7 @@ import {
   type EventSubscription,
 } from 'react-native';
 import {
-  initialize,
+  AdSettings,
   InterstitialAdManager,
   RewardedAdManager,
 } from 'react-native-meta-ads';
@@ -32,9 +32,6 @@ const REWARDED_PLACEMENT_ID = getPlacementId(
   placementId.rewarded.ios
 );
 
-console.log('INTERSTITIAL_PLACEMENT_ID', INTERSTITIAL_PLACEMENT_ID);
-console.log('REWARDED_PLACEMENT_ID', REWARDED_PLACEMENT_ID);
-
 function App(): React.JSX.Element {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isInterstitialLoaded, setIsInterstitialLoaded] = useState(false);
@@ -43,9 +40,34 @@ function App(): React.JSX.Element {
   const listenerSubscription = useRef<null | EventSubscription>(null);
 
   useEffect(() => {
+    // Initialize the sdk
     initializeAds();
   }, []);
 
+  // Fetch device hash on mount and manage test devices automatically
+  useEffect(() => {
+    const manageTestDevices = async () => {
+      const hash = AdSettings.getCurrentDeviceHash();
+      console.log('Current device hash:', hash);
+
+      if (__DEV__) {
+        // Development: Add test device for showing test ads while developing
+        if (hash) {
+          AdSettings.addTestDevice(hash);
+          console.log(
+            '🔧 Development mode: Added device as test device for safe development'
+          );
+        }
+      } else {
+        // Production: Clear any test devices to ensure real ads
+        AdSettings.clearTestDevices();
+        console.log('🚀 Production mode: Cleared test devices for real ads');
+      }
+    };
+    manageTestDevices();
+  }, []);
+
+  // Rewarded ad completed listener
   useEffect(() => {
     listenerSubscription.current = RewardedAdManager.onRewardedVideoCompleted(
       () => {
@@ -62,7 +84,7 @@ function App(): React.JSX.Element {
 
   const initializeAds = async () => {
     try {
-      const result = await initialize();
+      const result = await AdSettings.initialize();
       if (result.success) {
         setIsInitialized(true);
         console.log('AdSettings initialized:', result.message);

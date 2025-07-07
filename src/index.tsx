@@ -1,3 +1,3 @@
-export * from './AdSettings';
+export { AdSettingsManager as AdSettings } from './AdSettings';
 export { InterstitialAdManager } from './InterstitialAdManager';
 export { RewardedAdManager } from './RewardedAdManager';

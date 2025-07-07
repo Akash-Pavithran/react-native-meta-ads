@@ -9,6 +9,7 @@ import com.facebook.ads.AudienceNetworkAds
 import android.util.Log
 import android.content.pm.ApplicationInfo
 
+
 class AdSettings(reactContext: ReactApplicationContext) : NativeAdSettingsSpec(reactContext) {
     init {
         // Set debug mode based on build type
@@ -70,7 +71,21 @@ class AdSettings(reactContext: ReactApplicationContext) : NativeAdSettingsSpec(r
             AdSettings.addTestDevice(deviceHash)
             Log.d("AdSettings", "Test device added: $deviceHash")
         } catch (e: Exception) {
-            Log.e("AdSettings", "Error adding test device: ${e.message}")
+            Log.e("AdSettings", "Error adding test device: "+e.message)
         }
+    }
+
+    override fun clearTestDevices() {
+        try {
+            AdSettings.clearTestDevices()
+            Log.d("AdSettings", "All test devices cleared")
+        } catch (e: Exception) {
+            Log.e("AdSettings", "Error clearing test devices: "+e.message)
+        }
+    }
+
+    override fun getCurrentDeviceHash(): String? {
+        val sp = reactApplicationContext.getSharedPreferences("FBAdPrefs", 0)
+        return sp.getString("deviceIdHash", null)
     }
 }

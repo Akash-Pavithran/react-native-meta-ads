@@ -5,6 +5,8 @@ export interface Spec extends TurboModule {
   initialize(): Promise<{ success: boolean; message: string }>;
   isInitialized(): boolean;
   addTestDevice(deviceHash: string): void;
+  getCurrentDeviceHash(): string;
+  clearTestDevices(): void;
   // iOS-specific methods
   setLogLevel?(level: string): void;
   setAdvertiserIDCollectionEnabled?(enabled: boolean): void;
