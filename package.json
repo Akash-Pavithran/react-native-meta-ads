@@ -42,8 +42,19 @@
   },
   "keywords": [
     "react-native",
+    "meta",
+    "facebook",
+    "fb",
+    "audience-network",
+    "audience",
+    "network",
+    "ads",
+    "advertising",
+    "monetization",
     "ios",
-    "android"
+    "android",
+    "react-native-meta-ads",
+    "react-native-fb-ads"
   ],
   "repository": {
     "type": "git",
