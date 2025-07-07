@@ -29,7 +29,7 @@ import { InterstitialAdManager, RewardedAdManager, AdSettings } from 'react-nati
 import { useEffect, useRef } from 'react';
 import { EventSubscription } from 'react-native';
 
-// Initialize the SDK
+// Initialize the SDK - in App.js (call conditionally based on user preferences, e.g., skip for premium users)
 await AdSettings.initialize();
 
 // Basic ad loading and showing
@@ -85,6 +85,13 @@ For optimal performance of video ads (including rewarded ads), it's recommended 
 
 ## API
 
+### AdSettings
+
+- `initialize(): Promise<void>`
+- `addTestDevice(deviceHash: string): void`
+- `clearTestDevices(): void`
+- `getCurrentDeviceHash(): string | undefined`
+
 ### InterstitialAdManager
 
 - `loadAd(placementId: string): Promise<void>`
@@ -96,9 +103,42 @@ For optimal performance of video ads (including rewarded ads), it's recommended 
 - `showAd(placementId: string): Promise<void>`
 - `onRewardedVideoCompleted: EventEmitter<void>`
 
-### AdSettings
+## Test Device Handling
 
-- `initialize(): Promise<void>`
+### ⚠️ Important: Policy Compliance
+**Always use test ads during development to avoid policy violations and potential account bans.** Serving real ads during development may result in account suspension.
+
+### Recommended Test Device Management
+You should implement test device management in your app:
+
+```javascript
+// Implement this in your app initialization
+if (__DEV__) {
+  // Development: Add test device for showing test ads while developing
+  const deviceHash = AdSettings.getCurrentDeviceHash();
+  if (deviceHash) {
+    AdSettings.addTestDevice(deviceHash);
+  }
+} else {
+  // Production: Clear test devices to ensure real ads
+  AdSettings.clearTestDevices();
+}
+```
+
+### Testing Real Ads Safely
+
+#### For Physical Devices:
+Use **Meta Business Suite Monetization Manager** to test real ads safely:
+1. Go to Meta Business Suite → Monetization Manager
+2. Navigate to **Integration** → **Testing** and enable testing
+3. Add your device's **Google Advertising ID** as a test device
+4. Meta will whitelist your device for real ads (no revenue generated)
+
+**To find your Google Advertising ID on Android:** Go to **Settings** → **Google** → **Ads** → **Advertising ID**
+
+**Reference:** [Meta's Test Device Documentation](https://developers.facebook.com/docs/audience-network/setting-up/testing/platform#test-users)
+
+**Note:** You can also manually manage test devices using `AdSettings.addTestDevice()`, `AdSettings.clearTestDevices()`, and `AdSettings.getCurrentDeviceHash()` methods. This is useful for advanced features like premium ad-free experiences where you might want to disable ads for specific users.
 
 ## Contributing
 
