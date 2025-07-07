@@ -7,7 +7,8 @@ Supports:
 
 ## Development Status
 
-⚠️ **Note**: This package is currently in development. Only Android implementation is available at the moment. iOS support is planned but not yet implemented. Contributors are welcome to help implement the iOS side.
+⚠️ **Note**: This package currently supports Android only, which meets my requirements. iOS support is planned but I'm currently caught up with other projects and will return to it later.
+
 
 ## Platform Support
 
@@ -150,4 +151,6 @@ MIT
 
 ---
 
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+## ☕ Show Appreciation
+
+If this package has helped your project or led to successful monetization, and you'd like to show appreciation, donations via [PayPal](https://paypal.me/akashp96) are welcome.
