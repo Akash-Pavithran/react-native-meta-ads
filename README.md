@@ -185,7 +185,6 @@ Use **Meta Business Suite Monetization Manager** to test real ads safely:
 
 **Reference:** [Meta's Test Device Documentation](https://developers.facebook.com/docs/audience-network/setting-up/testing/platform#test-users)
 
-**Note:** You can also manually manage test devices using `AdSettings.addTestDevice()`, `AdSettings.clearTestDevices()`, and `AdSettings.getCurrentDeviceHash()` methods. This is useful for advanced features like premium ad-free experiences where you might want to disable ads for specific users.
 
 ## Contributing
 
