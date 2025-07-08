@@ -16,4 +16,12 @@ export const InterstitialAdManager = {
       throw new Error('InterstitialAdManager not available');
     }
   },
+
+  onInterstitialDismissed: (() => {
+    if (NativeInterstitialAdManager) {
+      return NativeInterstitialAdManager.onInterstitialDismissed;
+    } else {
+      throw new Error('InterstitialAdManager not available');
+    }
+  })(),
 };

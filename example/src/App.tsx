@@ -38,6 +38,7 @@ function App(): React.JSX.Element {
   const [isRewardedLoaded, setIsRewardedLoaded] = useState(false);
   const [reward, setReward] = useState(0);
   const listenerSubscription = useRef<null | EventSubscription>(null);
+  const interstitialSubscription = useRef<null | EventSubscription>(null);
 
   useEffect(() => {
     // Initialize the sdk
@@ -65,6 +66,28 @@ function App(): React.JSX.Element {
       }
     };
     manageTestDevices();
+  }, []);
+
+  // Interstitial ad dismissed listener with 5-minute timer
+  useEffect(() => {
+    interstitialSubscription.current =
+      InterstitialAdManager.onInterstitialDismissed(() => {
+        console.log('Interstitial ad dismissed, starting 5-minute timer');
+        // Load next ad after 5 minutes (or load immediately for preloading strategy)
+        // Note: Ads expire after ~1 hour, plan accordingly
+        setTimeout(
+          () => {
+            loadInterstitialAd();
+          },
+          10 * 1000 // 5 minutes - adjust for testing
+        );
+      });
+
+    return () => {
+      interstitialSubscription.current?.remove();
+      interstitialSubscription.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Rewarded ad completed listener
@@ -97,12 +120,15 @@ function App(): React.JSX.Element {
   };
 
   const loadInterstitialAd = async () => {
-    try {
-      await InterstitialAdManager.loadAd(INTERSTITIAL_PLACEMENT_ID);
-      setIsInterstitialLoaded(true);
-      console.log('Interstitial ad loaded successfully');
-    } catch (error) {
-      console.error('Failed to load interstitial ad:', error);
+    if (!isInterstitialLoaded) {
+      try {
+        await InterstitialAdManager.loadAd(INTERSTITIAL_PLACEMENT_ID);
+        setIsInterstitialLoaded(true);
+        console.log('Interstitial ad loaded successfully');
+      } catch (error) {
+        setIsInterstitialLoaded(false);
+        console.error('Failed to load interstitial ad:', error);
+      }
     }
   };
 
@@ -112,17 +138,21 @@ function App(): React.JSX.Element {
       setIsInterstitialLoaded(false);
       console.log('Interstitial ad shown successfully');
     } catch (error) {
+      setIsInterstitialLoaded(false);
       console.error('Error showing interstitial ad:', error);
     }
   };
 
   const loadRewardedAd = async () => {
-    try {
-      await RewardedAdManager.loadAd(REWARDED_PLACEMENT_ID);
-      setIsRewardedLoaded(true);
-      console.log('Rewarded ad loaded successfully');
-    } catch (error) {
-      console.error('Failed to load rewarded ad:', error);
+    if (!isRewardedLoaded) {
+      try {
+        await RewardedAdManager.loadAd(REWARDED_PLACEMENT_ID);
+        setIsRewardedLoaded(true);
+        console.log('Rewarded ad loaded successfully');
+      } catch (error) {
+        setIsRewardedLoaded(false);
+        console.error('Failed to load rewarded ad:', error);
+      }
     }
   };
 
@@ -132,6 +162,7 @@ function App(): React.JSX.Element {
       setIsRewardedLoaded(false);
       console.log('Rewarded ad shown successfully');
     } catch (error) {
+      setIsRewardedLoaded(false);
       console.error('Error showing rewarded ad:', error);
     }
   };
