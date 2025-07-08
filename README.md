@@ -58,9 +58,7 @@ For optimal performance of video ads (including rewarded ads), it's recommended 
 Initialize the SDK at the top level of your app (e.g., in `App.js`):
 
 ```javascript
-import { InterstitialAdManager, RewardedAdManager, AdSettings } from 'react-native-meta-ads';
-import { useEffect, useRef } from 'react';
-import { EventSubscription } from 'react-native';
+import { AdSettings } from 'react-native-meta-ads';
 
 // Initialize the SDK - in App.js (call conditionally based on user preferences, e.g., skip for premium users)
 await AdSettings.initialize();
@@ -68,43 +66,61 @@ await AdSettings.initialize();
 
 **Note:** The SDK is initialized as a method rather than automatically to give you control over when ads are loaded. This allows you to skip initialization for premium users (no ad) or implement conditional ad loading based on your app's business logic.
 
+> **From Meta Audience Network Documentation:** In case of not showing the ad immediately after the ad has been loaded, the developer is responsible for checking whether or not the ad has been invalidated. Once the ad is successfully loaded, the ad will be valid for 60 mins. You will not get paid if you are showing an invalidated ad.
+
 ## Interstitial Ads
 
 ```javascript
+import { InterstitialAdManager } from 'react-native-meta-ads';
+import { useEffect, useRef } from 'react';
+import { EventSubscription } from 'react-native';
+
 // Interstitial ads with timer (see example folder for complete implementation)
-useEffect(() => {
-  const subscription = InterstitialAdManager.onInterstitialDismissed(() => {
-    // Show next interstitial ad after 5 minutes
-    setTimeout(() => {
-      loadAndShowInterstitialAd()
-    }, 5 * 60 * 1000);
-  });
+function YourParentComponent() {
+  const interstitialSubscription = useRef<null | EventSubscription>(null);
+  // Listener - helps to know when interstitial ad is dismissed
+  useEffect(() => {
+    interstitialSubscription.current = InterstitialAdManager.onInterstitialDismissed(() => {
+      // Show next interstitial ad after 5 minutes
+      setTimeout(() => {
+        loadAndShowInterstitialAd()
+      }, 5 * 60 * 1000);
+    });
 
-  return () => subscription.remove();
-}, []);
+    return () => {
+      interstitialSubscription.current?.remove();
+      interstitialSubscription.current = null;
+    };
+  }, []);
 
-// Single function to load and show ad - you can instead load at app start and just show when needed (But be aware of ad invalidation and expiry)
-const loadAndShowInterstitialAd = async () => {
-  try {
-    await InterstitialAdManager.loadAd(PLACEMENT_ID); // loads the ad
-    await InterstitialAdManager.showAd(PLACEMENT_ID); // shows the ad
-  } catch (error) {
-      console.error('Error with interstitial ad:', error);
-    }
+  // Single function to load and show ad - you can instead load at app start and just show when needed as a preload strategy (But be aware of ad invalidation and expiry)
+  const loadAndShowInterstitialAd = async () => {
+    try {
+      await InterstitialAdManager.loadAd(PLACEMENT_ID); // loads the ad
+      await InterstitialAdManager.showAd(PLACEMENT_ID); // shows the ad
+    } catch (error) {
+        console.error('Error with interstitial ad:', error);
+      }
+  }
 }
 ```
 
 ## Rewarded Ads
 
 ```javascript
+import { InterstitialAdManager, RewardedAdManager } from 'react-native-meta-ads';
+import { useEffect, useRef, useState } from 'react';
+import { EventSubscription } from 'react-native';
+
 // Rewarded ads with reward handling
-function YourComponent() {
+function YourParentComponent() {
   const [reward, setReward] = useState(0);
   const listenerSubscription = useRef<null | EventSubscription>(null);
 
+// Listener - helps to know when rewarded video ad is completely watched
   useEffect(() => {
-    // Subscribe to reward events
     listenerSubscription.current = RewardedAdManager.onRewardedVideoCompleted(() => {
+      // Give can now give the reward
       setReward(prev => prev + 100);
       console.log('Reward given: +100 points');
     });
