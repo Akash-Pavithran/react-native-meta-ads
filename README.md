@@ -1,9 +1,11 @@
 # React Native Meta Ads
 
-A React Native package for Meta Audience Network integration. 
+Modern React Native package for Meta Audience Network integration built with TurboModules and the new architecture. 
 Supports:
 - Interstitial ads
 - Rewarded ads
+
+**Built with React Native's new architecture featuring TurboModules, Codegen, and modern performance optimizations.**
 
 ## Development Status
 
@@ -23,7 +25,37 @@ npm install react-native-meta-ads
 yarn add react-native-meta-ads
 ```
 
+## Requirements
+
+### Android
+
+For optimal performance of video ads (including rewarded ads), it's recommended to enable hardware acceleration in your app's `AndroidManifest.xml`. While hardware acceleration is enabled by default for API level >= 14, explicitly enabling it ensures the best experience:
+
+```xml
+<application android:hardwareAccelerated="true" ...>
+```
+
+## API
+
+### AdSettings
+
+- `initialize(): Promise<void>`
+
+### InterstitialAdManager
+
+- `loadAd(placementId: string): Promise<void>`
+- `showAd(placementId: string): Promise<void>`
+- `onInterstitialDismissed: EventEmitter<void>`
+
+### RewardedAdManager
+
+- `loadAd(placementId: string): Promise<void>`
+- `showAd(placementId: string): Promise<void>`
+- `onRewardedVideoCompleted: EventEmitter<void>`
+
 ## Usage
+
+Initialize the SDK at the top level of your app (e.g., in `App.js`):
 
 ```javascript
 import { InterstitialAdManager, RewardedAdManager, AdSettings } from 'react-native-meta-ads';
@@ -32,11 +64,39 @@ import { EventSubscription } from 'react-native';
 
 // Initialize the SDK - in App.js (call conditionally based on user preferences, e.g., skip for premium users)
 await AdSettings.initialize();
+```
 
-// Basic ad loading and showing
-await InterstitialAdManager.loadAd(PLACEMENT_ID);
-await InterstitialAdManager.showAd(PLACEMENT_ID);
+**Note:** The SDK is initialized as a method rather than automatically to give you control over when ads are loaded. This allows you to skip initialization for premium users (no ad) or implement conditional ad loading based on your app's business logic.
 
+## Interstitial Ads
+
+```javascript
+// Interstitial ads with timer (see example folder for complete implementation)
+useEffect(() => {
+  const subscription = InterstitialAdManager.onInterstitialDismissed(() => {
+    // Show next interstitial ad after 5 minutes
+    setTimeout(() => {
+      loadAndShowInterstitialAd()
+    }, 5 * 60 * 1000);
+  });
+
+  return () => subscription.remove();
+}, []);
+
+// Single function to load and show ad - you can instead load at app start and just show when needed (But be aware of ad invalidation and expiry)
+const loadAndShowInterstitialAd = async () => {
+  try {
+    await InterstitialAdManager.loadAd(PLACEMENT_ID); // loads the ad
+    await InterstitialAdManager.showAd(PLACEMENT_ID); // shows the ad
+  } catch (error) {
+      console.error('Error with interstitial ad:', error);
+    }
+}
+```
+
+## Rewarded Ads
+
+```javascript
 // Rewarded ads with reward handling
 function YourComponent() {
   const [reward, setReward] = useState(0);
@@ -73,36 +133,6 @@ function YourComponent() {
   );
 }
 ```
-
-## Requirements
-
-### Android
-
-For optimal performance of video ads (including rewarded ads), it's recommended to enable hardware acceleration in your app's `AndroidManifest.xml`. While hardware acceleration is enabled by default for API level >= 14, explicitly enabling it ensures the best experience:
-
-```xml
-<application android:hardwareAccelerated="true" ...>
-```
-
-## API
-
-### AdSettings
-
-- `initialize(): Promise<void>`
-- `addTestDevice(deviceHash: string): void`
-- `clearTestDevices(): void`
-- `getCurrentDeviceHash(): string | undefined`
-
-### InterstitialAdManager
-
-- `loadAd(placementId: string): Promise<void>`
-- `showAd(placementId: string): Promise<void>`
-
-### RewardedAdManager
-
-- `loadAd(placementId: string): Promise<void>`
-- `showAd(placementId: string): Promise<void>`
-- `onRewardedVideoCompleted: EventEmitter<void>`
 
 ## Test Device Handling
 
@@ -148,8 +178,6 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
-
----
 
 ## ☕ Show Appreciation
 
