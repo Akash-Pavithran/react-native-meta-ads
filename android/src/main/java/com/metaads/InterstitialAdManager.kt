@@ -44,6 +44,7 @@ class InterstitialAdManager(reactContext: ReactApplicationContext) : NativeInter
 
                 override fun onInterstitialDismissed(ad: com.facebook.ads.Ad) {
                     Log.d(TAG, "Interstitial ad dismissed")
+                    emitOnInterstitialDismissed()
                 }
 
                 override fun onError(ad: com.facebook.ads.Ad, adError: AdError) {
