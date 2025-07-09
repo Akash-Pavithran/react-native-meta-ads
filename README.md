@@ -9,13 +9,19 @@ Supports:
 
 ## Development Status
 
-⚠️ **Note**: This package currently supports Android only, which meets my requirements. iOS support is planned but I'm currently caught up with other projects and will return to it later.
-
+⚠️ **Note:**
+- Android support is stable and production-ready.
+- **iOS support is now available as a pre-release!**
+- Please help test on real devices by installing the latest alpha:
+  ```sh
+  npm install react-native-meta-ads@0.7.0-alpha.1
+  ```
+- Report any issues or feedback in GitHub Issues
 
 ## Platform Support
 
 - ✅ Android
-- ❌ iOS (Coming soon)
+- ⚠️ iOS (Pre-release, needs community testing)
 
 ## Installation
 
