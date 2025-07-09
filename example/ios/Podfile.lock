@@ -2,14 +2,16 @@ PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
   - fast_float (6.1.4)
+  - FBAudienceNetwork (6.20.0)
   - FBLazyVector (0.78.2)
   - fmt (11.0.2)
   - glog (0.3.5)
   - hermes-engine (0.78.2):
     - hermes-engine/Pre-built (= 0.78.2)
   - hermes-engine/Pre-built (0.78.2)
-  - MetaAds (0.1.0):
+  - MetaAds (0.6.0):
     - DoubleConversion
+    - FBAudienceNetwork (~> 6.20)
     - glog
     - hermes-engine
     - RCT-Folly (= 2024.11.18.00)
@@ -1622,6 +1624,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - FBAudienceNetwork
     - SocketRocket
 
 EXTERNAL SOURCES:
@@ -1765,11 +1768,12 @@ SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
+  FBAudienceNetwork: 51d3681e66c00ee36811c0d96e9fa39d5673eba8
   FBLazyVector: e32d34492c519a2194ec9d7f5e7a79d11b73f91c
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: 2771b98fb813fdc6f92edd7c9c0035ecabf9fee7
-  MetaAds: d36470f3cca1913fe621ea693264167607aba1f5
+  MetaAds: b16e03705454caa73906bbf49b92a27d2e1cdcb9
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: be794de7dc6ed8f9f7fbf525f86e7651b8b68746
   RCTRequired: a83787b092ec554c2eb6019ff3f5b8d125472b3b

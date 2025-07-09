@@ -1,6 +1,6 @@
+#import <Foundation/Foundation.h>
+#import <React/RCTBridgeModule.h>
 
-#import <MetaAds/RNMetaAdsSpec.h>
-
-@interface MetaAds : NSObject <NativeMetaAdsSpec>
+@interface MetaAds : NSObject <RCTBridgeModule>
 
 @end

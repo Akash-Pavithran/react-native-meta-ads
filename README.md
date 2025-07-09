@@ -35,6 +35,28 @@ For optimal performance of video ads (including rewarded ads), it's recommended 
 <application android:hardwareAccelerated="true" ...>
 ```
 
+### iOS: CocoaPods
+
+1. **Install CocoaPods dependencies:**
+
+   After installing the package, navigate to your iOS directory and run:
+
+   ```sh
+   cd ios
+   pod install
+   ```
+
+2. **Add App Tracking Transparency (ATT) usage description:**
+
+   Add the following key to your app's `Info.plist` file. This is required by Apple for any app using the ATT framework.
+
+   ```xml
+   <key>NSUserTrackingUsageDescription</key>
+   <string>This app uses tracking to provide personalized ads and improve your experience.</string>
+   ```
+
+   If you do not include this key, your app may crash or be rejected during App Store review.
+
 ## API
 
 ### AdSettings
@@ -150,6 +172,20 @@ function YourParentComponent() {
 }
 ```
 
+## ATT & Tracking (iOS)
+
+- The package **automatically handles App Tracking Transparency (ATT) and tracking status** for you with the initialize method.
+- On iOS 14.5–16.x, the user will see the ATT prompt and the package will call `setAdvertiserTrackingEnabled` for you based on their choice.
+- On iOS 17+ (with Audience Network SDK 6.15.0+), you are **no longer required to set the Advertiser Tracking Enabled parameter**. The SDK now relies on Apple’s App Tracking Transparency (ATT) system API to determine ATT permission status for requests or events. The ATT prompt is not shown.
+
+> ⚠️ **Note:** iOS support has not been fully tested due to simulator limitations (e.g., no ad fill, unreliable ATT/IDFA behavior). Please test on a real device for accurate results.
+- On iOS 14.5–16.x, the ATT prompt will be shown and tracking is set based on user choice.
+- On iOS 17+, the ATT prompt is not shown and the SDK relies on Apple’s ATT API for status. The setAdvertiserTrackingEnabled flag is ignored and deprecated for Audience Network SDK 6.15.0+ on iOS 17+.
+
+> If you are able to test on a real device, your feedback and contributions are welcome!
+
+> For reference see [Meta Audience Network: Advertising Tracking Enabled for Audience Network](https://developers.facebook.com/docs/audience-network/setting-up/platform-setup/ios/advertising-tracking-enabled)
+
 ## Test Device Handling
 
 ### ⚠️ Important: Policy Compliance
@@ -186,6 +222,7 @@ Use **Meta Business Suite Monetization Manager** to test real ads safely:
 **Reference:** [Meta's Test Device Documentation](https://developers.facebook.com/docs/audience-network/setting-up/testing/platform#test-users)
 
 
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
@@ -193,7 +230,7 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
-
 ## ☕ Show Appreciation
 
 If this package has helped your project or led to successful monetization, and you'd like to show appreciation, donations via [PayPal](https://paypal.me/akashp96) are welcome.
+
