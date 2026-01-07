@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -37,13 +37,38 @@ function App(): React.JSX.Element {
   const [isInterstitialLoaded, setIsInterstitialLoaded] = useState(false);
   const [isRewardedLoaded, setIsRewardedLoaded] = useState(false);
   const [reward, setReward] = useState(0);
+  const [hasConsent] = useState(true); // Set based on your consent logic
   const listenerSubscription = useRef<null | EventSubscription>(null);
   const interstitialSubscription = useRef<null | EventSubscription>(null);
+
+  const initializeAds = useCallback(async () => {
+    try {
+      // Set data processing options before initializing
+      const dataProcessingOptions = hasConsent ? [] : ['LDU'];
+      AdSettings.setDataProcessingOptions(dataProcessingOptions);
+      console.log(
+        'Data processing options set:',
+        dataProcessingOptions.length > 0
+          ? dataProcessingOptions.join(', ')
+          : 'none (has consent)'
+      );
+
+      const result = await AdSettings.initialize();
+      if (result.success) {
+        setIsInitialized(true);
+        console.log('AdSettings initialized:', result.message);
+      } else {
+        console.error('AdSettings initialization failed:', result.message);
+      }
+    } catch (error) {
+      console.error('Error initializing AdSettings:', error);
+    }
+  }, [hasConsent]);
 
   useEffect(() => {
     // Initialize the sdk
     initializeAds();
-  }, []);
+  }, [initializeAds]);
 
   // Fetch device hash on mount and manage test devices automatically
   useEffect(() => {
@@ -104,20 +129,6 @@ function App(): React.JSX.Element {
       listenerSubscription.current = null;
     };
   }, []);
-
-  const initializeAds = async () => {
-    try {
-      const result = await AdSettings.initialize();
-      if (result.success) {
-        setIsInitialized(true);
-        console.log('AdSettings initialized:', result.message);
-      } else {
-        console.error('AdSettings initialization failed:', result.message);
-      }
-    } catch (error) {
-      console.error('Error initializing AdSettings:', error);
-    }
-  };
 
   const loadInterstitialAd = async () => {
     if (!isInterstitialLoaded) {

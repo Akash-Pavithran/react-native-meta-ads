@@ -4,6 +4,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.ads.AdSettings
 import com.facebook.ads.AudienceNetworkAds
 import android.util.Log
@@ -88,4 +89,31 @@ class AdSettings(reactContext: ReactApplicationContext) : NativeAdSettingsSpec(r
         val sp = reactApplicationContext.getSharedPreferences("FBAdPrefs", 0)
         return sp.getString("deviceIdHash", null)
     }
+
+    override fun setDataProcessingOptions(options: ReadableArray) {
+    try {
+        val processedOptions = mutableListOf<String>()
+
+        for (i in 0 until options.size()) {
+            val value = options.getString(i)
+            if (!value.isNullOrBlank()) {
+                processedOptions.add(value)
+            }
+        }
+
+        AdSettings.setDataProcessingOptions(processedOptions.toTypedArray())
+
+        Log.d(
+            "MetaAdSettings",
+            "Data processing options set: ${processedOptions.joinToString(", ")}"
+        )
+    } catch (e: Exception) {
+        Log.e(
+            "MetaAdSettings",
+            "Error setting data processing options",
+            e
+        )
+    }
+}
+
 }

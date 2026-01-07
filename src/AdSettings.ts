@@ -38,6 +38,12 @@ export const AdSettingsManager = {
     }
   },
 
+  setDataProcessingOptions(options: string[]): void {
+    if (AdSettings && AdSettings.setDataProcessingOptions) {
+      AdSettings.setDataProcessingOptions(options);
+    }
+  },
+
   // iOS-specific methods
   setLogLevel(
     level: 'none' | 'debug' | 'verbose' | 'warning' | 'error' | 'notification'

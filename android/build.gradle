@@ -91,7 +91,7 @@ def kotlin_version = getExtOrDefault("kotlinVersion")
 dependencies {
   implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation "com.facebook.android:audience-network-sdk:6.19.0"
+  implementation "com.facebook.android:audience-network-sdk:6.21.0"
   implementation "androidx.annotation:annotation:1.0.0"
 }
 
