@@ -38,9 +38,13 @@ export const AdSettingsManager = {
     }
   },
 
-  setDataProcessingOptions(options: string[]): void {
+  setDataProcessingOptions(
+    options: string[],
+    country?: number,
+    state?: number
+  ): void {
     if (AdSettings && AdSettings.setDataProcessingOptions) {
-      AdSettings.setDataProcessingOptions(options);
+      AdSettings.setDataProcessingOptions(options, country, state);
     }
   },
 

@@ -7,7 +7,11 @@ export interface Spec extends TurboModule {
   addTestDevice(deviceHash: string): void;
   getCurrentDeviceHash(): string;
   clearTestDevices(): void;
-  setDataProcessingOptions(options: string[]): void;
+  setDataProcessingOptions(
+    options: string[],
+    country?: number,
+    state?: number
+  ): void;
   // iOS-specific methods
   setLogLevel?(level: string): void;
   setAdvertiserIDCollectionEnabled?(enabled: boolean): void;

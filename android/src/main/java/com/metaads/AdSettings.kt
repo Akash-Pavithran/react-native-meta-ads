@@ -90,30 +90,26 @@ class AdSettings(reactContext: ReactApplicationContext) : NativeAdSettingsSpec(r
         return sp.getString("deviceIdHash", null)
     }
 
-    override fun setDataProcessingOptions(options: ReadableArray) {
-    try {
-        val processedOptions = mutableListOf<String>()
-
-        for (i in 0 until options.size()) {
-            val value = options.getString(i)
-            if (!value.isNullOrBlank()) {
-                processedOptions.add(value)
+    override fun setDataProcessingOptions(options: ReadableArray, country: Double?, state: Double?) {
+        try {
+            val optionsList = mutableListOf<String>()
+            for (i in 0 until options.size()) {
+                val value = options.getString(i)
+                if (!value.isNullOrBlank()) {
+                    optionsList.add(value)
+                }
             }
+
+            if (country != null && state != null) {
+                AdSettings.setDataProcessingOptions(optionsList.toTypedArray(), country.toInt(), state.toInt())
+            } else {
+                AdSettings.setDataProcessingOptions(optionsList.toTypedArray())
+            }
+
+            Log.d("AdSettings", "Data processing options set: ${optionsList.joinToString(", ")} (country: $country, state: $state)")
+        } catch (e: Exception) {
+            Log.e("AdSettings", "Error setting data processing options", e)
         }
-
-        AdSettings.setDataProcessingOptions(processedOptions.toTypedArray())
-
-        Log.d(
-            "MetaAdSettings",
-            "Data processing options set: ${processedOptions.joinToString(", ")}"
-        )
-    } catch (e: Exception) {
-        Log.e(
-            "MetaAdSettings",
-            "Error setting data processing options",
-            e
-        )
     }
-}
 
 }

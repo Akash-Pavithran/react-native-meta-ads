@@ -45,7 +45,15 @@ For optimal performance of video ads (including rewarded ads), it's recommended 
 
 ### AdSettings
 
-- `initialize(): Promise<void>`
+- `initialize(): Promise<{ success: boolean; message: string }>`
+- `isInitialized(): boolean`
+- `addTestDevice(deviceHash: string): void`
+- `getCurrentDeviceHash(): string | undefined`
+- `clearTestDevices(): void`
+- `setDataProcessingOptions(options: string[], country?: number, state?: number): void`
+- `setLogLevel(level: string): void` (iOS only)
+- `setAdvertiserIDCollectionEnabled(enabled: boolean): void` (iOS only)
+- `setAdvertiserTrackingEnabled(enabled: boolean): void` (iOS only)
 
 ### InterstitialAdManager
 

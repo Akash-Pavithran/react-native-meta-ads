@@ -37,7 +37,7 @@ function App(): React.JSX.Element {
   const [isInterstitialLoaded, setIsInterstitialLoaded] = useState(false);
   const [isRewardedLoaded, setIsRewardedLoaded] = useState(false);
   const [reward, setReward] = useState(0);
-  const [hasConsent] = useState(true); // Set based on your consent logic
+  const [hasConsent] = useState(false); // Set based on your consent logic
   const listenerSubscription = useRef<null | EventSubscription>(null);
   const interstitialSubscription = useRef<null | EventSubscription>(null);
 
@@ -45,7 +45,11 @@ function App(): React.JSX.Element {
     try {
       // Set data processing options before initializing
       const dataProcessingOptions = hasConsent ? [] : ['LDU'];
-      AdSettings.setDataProcessingOptions(dataProcessingOptions);
+      if (dataProcessingOptions.length > 0) {
+        AdSettings.setDataProcessingOptions(dataProcessingOptions, 0, 0);
+      } else {
+        AdSettings.setDataProcessingOptions(dataProcessingOptions);
+      }
       console.log(
         'Data processing options set:',
         dataProcessingOptions.length > 0
