@@ -1,6 +1,6 @@
 {
   "name": "react-native-meta-ads",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "React native Meta Audience Network integration",
   "source": "./src/index.tsx",
   "main": "./lib/module/index.js",
